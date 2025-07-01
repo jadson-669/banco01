@@ -1,4 +1,8 @@
+const BASE_URL = window.location.hostname.includes('localhost')
+  ? 'http://localhost:3000'
+  : 'https://banco01.onrender.com';
 
+    
     let saldo = 0;
     const saldoSpan = document.getElementById('saldo');
     const extratoLista = document.getElementById('extrato-lista');
@@ -69,7 +73,8 @@ document.getElementById('confirmar-deposito').addEventListener('click', async fu
       mostrarPopup("Chave Pix gerada! Copie e faça o pagamento.");
 
       // ✅ Corrigido: usar a rota /depositar e enviar apenas username e valor
-      const res = await fetch("http://localhost:3000/depositar", {
+      const res = await fetch(`${BASE_URL}/depositar`, {
+
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, valor }) // ⬅️ somente esses campos
@@ -236,7 +241,8 @@ async function confirmarAposta(partida, valorId, timeId) {
   if (!confirmar) return;
 
   try {
-    const res = await fetch("http://localhost:3000/apostar", {
+    const res = await fetch(`${BASE_URL}/depositar`, {
+
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username, partida, valor, odd })
@@ -277,7 +283,8 @@ async function register() {
     return alert('Preencha todos os campos');
   }
 
-  const res = await fetch('http://localhost:3000/register', {
+  const res = await fetch(`${BASE_URL}/depositar`, {
+
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ username: user, password: pass, email: email })
@@ -294,7 +301,8 @@ async function login() {
   const user = document.getElementById('username').value;
   const pass = document.getElementById('password').value;
 
-  const res = await fetch('http://localhost:3000/login', {
+  const res = await fetch(`${BASE_URL}/depositar`, {
+
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ username: user, password: pass })
@@ -329,7 +337,8 @@ async function login() {
 
  async function carregarSaldo(username) {
   try {
-    const res = await fetch(`http://localhost:3000/saldo/${username}`);
+    const res = await fetch(`${BASE_URL}/saldo/${username}`);
+
     const data = await res.json();
 
     saldo = data.saldo || 0;  // se saldo for null ou undefined, considera 0
@@ -394,7 +403,8 @@ function fecharModalSaque() {
 
 async function carregarExtrato(username) {
   try {
-    const res = await fetch(`http://localhost:3000/extrato/${username}`);
+    const res = await fetch(`${BASE_URL}/extrato/${username}`);
+
     const data = await res.json();
 
     if (data.extrato) {
@@ -435,7 +445,8 @@ mostrarMensagem("⚠️ O valor mínimo para saque é R$20,00.");
   }
 
   try {
-    const res = await fetch('http://localhost:3000/sacar', {
+    const res = await fetch(`${BASE_URL}/sacar`, {
+
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username, valor })
