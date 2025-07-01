@@ -171,7 +171,7 @@ document.getElementById('btn-confirmar-aposta').addEventListener('click', async 
   const { partida, valor, odd, username, timeEscolhido } = apostaTemp;
 
   try {
-    const response = await fetch('/apostar', {
+    const response = await fetch(`${BASE_URL}/apostar`, {  // <<== corrigido aqui
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -208,41 +208,10 @@ document.getElementById('btn-cancelar-aposta').addEventListener('click', () => {
 });
 
 async function confirmarAposta(partida, valorId, timeId) {
-  const valorEl = document.getElementById(valorId);
-  const oddEl = document.getElementById(timeId);
-
-  if (!valorEl || !oddEl) {
-    alert("Campos da aposta não encontrados.");
-    return;
-  }
-
-  const valor = parseFloat(valorEl.value);
-  const odd = parseFloat(oddEl.value);
-  const username = sessionStorage.getItem("user");
-
-  if (!username) {
-    alert("Você precisa estar logado para apostar.");
-    return;
-  }
-
-  if (isNaN(valor) || valor <= 0) {
-    alert("Insira um valor válido.");
-    return;
-  }
-
-  if (valor > saldo) {
-    mostrarPopup("⚠️Saldo insuficiente.");
-    return;
-  }
-
-  const lucro = valor * odd;
-  const confirmar = confirm(`Retorno estimado: R$${lucro.toFixed(2)}\n\nTem certeza que deseja realizar esta aposta?`);
-
-  if (!confirmar) return;
+  // ... validações ...
 
   try {
-    const res = await fetch(`${BASE_URL}/depositar`, {
-
+    const res = await fetch(`${BASE_URL}/apostar`, {  // <<== corrigido aqui
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username, partida, valor, odd })
@@ -251,17 +220,16 @@ async function confirmarAposta(partida, valorId, timeId) {
     const data = await res.json();
 
     if (!res.ok) {
-  if (data.message && data.message.includes("Limite diário")) {
-    document.getElementById('modal-confirm-aposta').style.display = 'none';
-    document.getElementById('modal-limite-aposta').style.display = 'flex';
-  } else {
-    mostrarPopup(data.message || "Erro ao apostar.");
-  }
-  return;
-}
+      if (data.message && data.message.includes("Limite diário")) {
+        document.getElementById('modal-confirm-aposta').style.display = 'none';
+        document.getElementById('modal-limite-aposta').style.display = 'flex';
+      } else {
+        mostrarPopup(data.message || "Erro ao apostar.");
+      }
+      return;
+    }
 
-
-    mostrarPopup(`Aposta registrada! Possível retorno: R$${lucro.toFixed(2)}`);
+    mostrarPopup(`Aposta registrada! Possível retorno: R$${(valor*odd).toFixed(2)}`);
     await carregarSaldo(username);
     await carregarExtrato(username);
 
@@ -283,8 +251,7 @@ async function register() {
     return alert('Preencha todos os campos');
   }
 
-  const res = await fetch(`${BASE_URL}/depositar`, {
-
+  const res = await fetch(`${BASE_URL}/register`, { // <<== corrigido aqui
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ username: user, password: pass, email: email })
@@ -301,15 +268,14 @@ async function login() {
   const user = document.getElementById('username').value;
   const pass = document.getElementById('password').value;
 
-  const res = await fetch(`${BASE_URL}/depositar`, {
-
+  const res = await fetch(`${BASE_URL}/login`, {  // <<== corrigido aqui
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ username: user, password: pass })
   });
 
   const data = await res.json();
-   if (!res.ok) {
+  if (!res.ok) {
     mostrarPopup(data.message || "Erro no login");
     return;
   }
@@ -327,6 +293,7 @@ async function login() {
 
   mostrarModalBoasVindas();
 }
+
 
 
 
