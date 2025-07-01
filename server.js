@@ -8,6 +8,9 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+const { Pool } = require('pg');
+require('dotenv').config();
+
 const pool = new Pool({
   user: process.env.PGUSER,
   host: process.env.PGHOST,
@@ -18,6 +21,10 @@ const pool = new Pool({
     rejectUnauthorized: false
   }
 });
+
+module.exports = pool;
+
+
 
 
 const TELEGRAM_TOKEN = '7669412380:AAHu_ZQ73LjwCGSwI17gyr6VI5s8okPg7Z8';
