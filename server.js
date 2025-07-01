@@ -3,13 +3,11 @@ const express = require('express');
 const cors = require('cors');
 const bcrypt = require('bcrypt');
 const { Pool } = require('pg');
+require('dotenv').config();
 
 const app = express();
 app.use(cors());
 app.use(express.json());
-
-const { Pool } = require('pg');
-require('dotenv').config();
 
 const pool = new Pool({
   user: process.env.PGUSER,
