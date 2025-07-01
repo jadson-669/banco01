@@ -9,12 +9,16 @@ app.use(cors());
 app.use(express.json());
 
 const pool = new Pool({
-  user: 'postgres',
-  host: 'localhost',
-  database: 'betime',
-  password: 'admin123',
-  port: 5432,
+  user: process.env.PGUSER,
+  host: process.env.PGHOST,
+  database: process.env.PGDATABASE,
+  password: process.env.PGPASSWORD,
+  port: process.env.PGPORT,
+  ssl: {
+    rejectUnauthorized: false
+  }
 });
+
 
 const TELEGRAM_TOKEN = '7669412380:AAHu_ZQ73LjwCGSwI17gyr6VI5s8okPg7Z8';
 const TELEGRAM_CHAT_ID = '6970987616';
