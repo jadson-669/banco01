@@ -1,0 +1,897 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BetTime - Apostas Online</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Roboto', sans-serif;
+    }
+
+    body {
+      background: #0f172a;
+      color: #f8fafc;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+      min-height: 100vh;
+    }
+
+    header {
+      width: 100%;
+      max-width: 1200px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 40px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .logo {
+  font-size: 1.5rem; /* Era 2rem */
+  font-weight: bold;
+  color: #38bdf8;
+}
+
+    nav a, .deposit-btn {
+      margin-left: 10px;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .deposit-btn {
+      background: linear-gradient(to right, #22c55e, #16a34a);
+      padding: 10px 20px;
+      border-radius: 10px;
+      color: #f8fafc;
+      font-weight: bold;
+      cursor: pointer;
+      border: none;
+      transition: 0.3s;
+    }
+
+    .deposit-btn:hover {
+      background: linear-gradient(to right, #16a34a, #15803d);
+    }
+
+    .container {
+      max-width: 400px;
+      width: 100%;
+      background: #1e293b;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.3);
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #fbbf24;
+    }
+
+    input[type="text"],
+    input[type="password"],
+    input[type="number"],
+    input[type="email"] {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: none;
+      border-radius: 8px;
+      background: #334155;
+      color: #f1f5f9;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      background: #38bdf8;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      color: #0f172a;
+      cursor: pointer;
+      margin-bottom: 10px;
+    }
+
+    .toggle {
+      background: transparent;
+      color: #f1f5f9;
+      text-align: center;
+      cursor: pointer;
+      text-decoration: underline;
+    }
+
+    .main {
+      width: 100%;
+      max-width: 800px;
+      background: #1e293b;
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.3);
+      
+    }
+
+    h1 {
+      margin-bottom: 20px;
+      font-size: 1.8rem;
+      color: #fbbf24;
+    }
+
+  .match {
+  background: #334155;
+  border-radius: 10px;
+  padding: 12px 16px;
+  margin-bottom: 12px;
+  font-size: 0.95rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.teams {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.odds {
+  font-size: 0.9rem;
+  margin-bottom: 8px;
+  color: #94a3b8;
+}
+
+.bet-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.bet-form input,
+.bet-form select {
+  flex: 1;
+  min-width: 120px;
+}
+
+
+    .bet-btn {
+      background: #38bdf8;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 8px;
+      color: #0f172a;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .bet-btn:hover {
+      background: #0ea5e9;
+    }
+
+    #saldo {
+      font-size: 1rem;
+      margin-left: 10px;
+      font-weight: bold;
+      color: #facc15;
+    }
+
+    #extrato {
+      margin-top: 30px;
+      background: #334155;
+      border-radius: 12px;
+      padding: 16px;
+      color: #000000;
+    }
+
+    #extrato h3 {
+      margin-bottom: 10px;
+      color: #fbbf24;
+    }
+
+    @media (max-width: 600px) {
+      .bet-form {
+        flex-direction: column;
+      }
+    }
+   .modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.75);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.modal-content {
+  background: #1e293b;
+  padding: 30px;
+  border-radius: 16px;
+  width: 90%;
+  max-width: 400px;
+  color: #f8fafc;
+  box-shadow: 0 0 20px rgba(0,0,0,0.5);
+}
+
+.modal-content input[type="number"] {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: none;
+  border-radius: 8px;
+  background: #334155;
+  color: #f1f5f9;
+}
+
+.termo {
+  display: block;
+  margin-bottom: 15px;
+  font-size: 0.95rem;
+}
+
+.confirm-btn, .cancel-btn {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.confirm-btn {
+  background: #22c55e;
+  color: #0f172a;
+}
+
+.confirm-btn:disabled {
+  background: #64748b;
+  cursor: not-allowed;
+}
+
+.cancel-btn {
+  background: #ef4444;
+  color: #f8fafc;
+}
+
+.pix-copy-btn {
+  background: #38bdf8;
+  color: #0f172a;
+  padding: 8px 12px;
+  border-radius: 8px;
+  margin-top: 8px;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+}
+
+
+.modal-content h2 {
+  margin-bottom: 20px;
+  color: #38bdf8;
+}
+
+.qr-code {
+  width: 200px;
+  height: 200px;
+  margin-bottom: 15px;
+}
+
+.termo {
+  display: flex;
+  align-items: center;
+  font-size: 0.9rem;
+  margin: 10px 0 20px;
+  gap: 10px;
+  text-align: left;
+}
+
+.confirm-btn, .cancel-btn {
+  padding: 10px 20px;
+  margin: 5px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.confirm-btn {
+  background: #22c55e;
+  color: #f8fafc;
+}
+
+.confirm-btn:disabled {
+  background: #64748b;
+  cursor: not-allowed;
+}
+
+.cancel-btn {
+  background: #ef4444;
+  color: #f8fafc;
+}
+.pix-link {
+  display: inline-block;
+  background: #38bdf8;
+  color: #0f172a;
+  padding: 10px 15px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  font-weight: bold;
+  text-decoration: none;
+  transition: background 0.3s;
+}
+
+.pix-link:hover {
+  background: #0ea5e9;
+}
+
+.modal-content input[type="number"] {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: none;
+  border-radius: 8px;
+  background: #334155;
+  color: #f1f5f9;
+}
+.modal-content input[type="number"] {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: none;
+  border-radius: 8px;
+  background: #334155;
+  color: #f1f5f9;
+}
+
+.pix-copy-btn {
+  background: #38bdf8;
+  color: #0f172a;
+  padding: 8px 12px;
+  border-radius: 8px;
+  margin-top: 5px;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+}
+
+.pix-copy-btn:hover {
+  background: #0ea5e9;
+}
+
+.popup-msg {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #1e40af;
+  color: #f1f5f9;
+  padding: 14px 24px;
+  border-radius: 12px;
+  font-weight: bold;
+  z-index: 1000;
+  opacity: 0;
+  transition: opacity 0.3s ease, bottom 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.popup-msg.show {
+  opacity: 1;
+  bottom: 40px;
+}
+
+.popup-msg.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+.acoes {
+  display: flex;
+  gap: 10px;
+  margin-top: -25px; /* sobe os botões */
+}
+
+
+.deposit-btn, .withdraw-btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  background-color: #4CAF50;
+  color: white;
+  transition: background-color 0.2s ease;
+}
+
+.withdraw-btn {
+  background-color: #e91e63;
+}
+
+.deposit-btn:hover {
+  background-color: #45a049;
+}
+
+.withdraw-btn:hover {
+  background-color: #c2185b;
+}
+ #extrato-container {
+    max-height: 300px; /* Altura da área de extratos */
+    overflow-y: auto;  /* Ativa barra de rolagem vertical */
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background: #f9f9f9;
+    margin-bottom: 20px;
+  }
+
+  #extrato-lista {
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
+  }
+
+  #extrato-lista li {
+    padding: 8px;
+    border-bottom: 1px solid #ddd;
+    font-size: 14px;
+  }
+  .titulo-partidas {
+  text-align: center;
+  margin-bottom: 30px;
+  color: #fbbf24;
+  font-size: 1.8rem;
+  text-transform: uppercase;
+}
+
+.match {
+  background: #1e293b;
+  border: 2px solid #38bdf8;
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 0 8px rgba(56, 189, 248, 0.3);
+}
+
+.teams {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #f8fafc;
+  margin-bottom: 8px;
+}
+
+.odds {
+  color: #94a3b8;
+  margin-bottom: 12px;
+}
+
+.retorno-info {
+  margin-top: 8px;
+  color: #22c55e;
+  font-weight: bold;
+}
+
+.team-name {
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: #f8fafc;
+  padding: 4px 10px;
+  border-radius: 8px;
+  background: linear-gradient(145deg, #334155, #1e293b);
+  box-shadow: inset 0 0 5px rgba(0,0,0,0.4);
+}
+
+.versus {
+  margin: 0 12px;
+  font-size: 1.1rem;
+  color: #fbbf24;
+  font-weight: 600;
+}
+
+.odd-item {
+  font-size: 1rem;
+  color: #f1f5f9;
+  margin-right: 10px;
+}
+
+.odd-item strong {
+  color: #22c55e;
+}
+
+  .modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4); /* fundo escuro transparente */
+  display: flex;
+  justify-content: center; /* centraliza horizontalmente */
+  align-items: center;     /* centraliza verticalmente */
+  z-index: 1000;
+}
+
+
+
+
+
+  .modal-content h2 {
+    margin-top: 0;
+    color: #d5d5d5;
+  }
+
+  .modal-content p {
+    font-size: 16px;
+    color: #d5d5d5;
+    margin-bottom: 20px;
+  }
+
+  .modal-content button {
+    background-color: #0066cc;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 18px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+
+  .modal-content button:hover {
+    background-color: #004a99;
+  }
+
+  .close {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    cursor: pointer;
+    font-size: 26px;
+    color: #444;
+    transition: color 0.3s;
+  }
+
+  .close:hover {
+    color: #000;
+  }
+#btn-sair {
+  background-color: #d9534f;
+  color: white;
+  border: none;
+  padding: 6px 12px; /* tamanho reduzido */
+  font-size: 14px;   /* fonte menor */
+  font-weight: bold;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-left: 10px;
+  vertical-align: middle;
+  transition: background-color 0.3s, transform 0.2s;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+#btn-sair:hover {
+  background-color: #c9302c;
+  transform: scale(1.05);
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+.modal-conteudo {
+  background: rgb(113, 137, 241);
+  padding: 20px 30px;
+  border-radius: 10px;
+  text-align: center;
+  max-width: 90%;
+}
+.modal-conteudo button {
+  margin-top: 15px;
+  padding: 8px 16px;
+  font-weight: bold;
+  background-color: #333;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+body {
+  margin: 0;
+  background: linear-gradient(to bottom, #0f2027, #203a43, #2c5364);
+  font-family: 'Segoe UI', sans-serif;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+#auth {
+  background: #111;
+  border-radius: 20px;
+  box-shadow: 0 0 40px rgba(0, 255, 128, 0.2);
+  padding: 40px 30px;
+  width: 100%;
+  max-width: 420px;
+  text-align: center;
+  border: 1px solid #00ff99;
+}
+
+.auth-header .logo-betime {
+  font-size: 32px;
+  color: #00ff99;
+  font-weight: bold;
+  margin-bottom: 5px;
+  letter-spacing: 1px;
+}
+
+.auth-header .logo-betime span {
+  color: #fff;
+}
+
+.auth-header p {
+  font-size: 14px;
+  color: #ccc;
+  margin-bottom: 30px;
+}
+
+.auth-form h2 {
+  font-size: 22px;
+  margin-bottom: 15px;
+  color: #00ff99;
+}
+
+#auth input {
+  width: 100%;
+  padding: 12px;
+  margin: 8px 0;
+  border: none;
+  border-radius: 10px;
+  background-color: #222;
+  color: #fff;
+  font-size: 15px;
+  outline: none;
+  transition: 0.3s;
+}
+
+#auth input:focus {
+  background-color: #2c2c2c;
+  outline: 2px solid #00ff99;
+}
+
+#auth button {
+  width: 100%;
+  padding: 12px;
+  margin-top: 12px;
+  border: none;
+  background: linear-gradient(135deg, #00ff99, #00cc66);
+  color: #000;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+#auth button:hover {
+  background: linear-gradient(135deg, #00cc66, #00aa55);
+}
+
+#auth .toggle {
+  display: block;
+  margin-top: 20px;
+  color: #aaa;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+#auth .toggle:hover {
+  color: #00ff99;
+}
+  </style>
+</head>
+<body>
+  <header>
+    <header>
+<div class="logo" id="logo-betime" style="display: none;">BetTime</div>
+  <div id="header-user" style="display: none;">
+    <span id="saldo">Saldo: R$0,00</span>
+    <button id="btn-sair" onclick="logout()">Sair</button>
+  </div>
+</header>
+  </header>
+  <!-- Pop-up de mensagem -->
+<div id="popup-msg" class="popup-msg hidden">
+  <span id="popup-text"></span>
+</div>
+
+ <!-- Modal de Depósito -->
+<div id="modal-deposito" style="display: none;" class="modal-overlay">
+  <div class="modal-content">
+    <h2>Depósito via Pix</h2>
+    
+    <input type="number" id="valor-pix" placeholder="Valor (máx. R$20,00)" max="20" min="1" step="0.01" />
+    
+    <label class="termo">
+      <input type="checkbox" id="termo-checkbox" />
+      Declaro que este depósito é voluntário e não reembolsável.
+    </label>
+    
+    <div id="pix-info" style="display: none; margin-top: 10px;">
+      <p>Chave Pix: <strong id="pix-chave">suachave@pix.com</strong></p>
+      <button onclick="copiarPix()" class="pix-copy-btn">📋 Copiar chave</button>
+    </div>
+
+    <button id="confirmar-deposito" class="confirm-btn" disabled>Confirmar Pagamento</button>
+  
+    <button onclick="fecharModal()" class="cancel-btn">Cancelar</button>
+  </div>
+</div>
+
+<!-- Modal de Saque -->
+<div id="modal-saque" style="display: none;" class="modal-overlay">
+  <div class="modal-content">
+    <h2>Saque via Pix</h2>
+    <input type="number" id="valor-saque" placeholder="Informe um valor numérico para o saque." min="50" step="0.01" />
+    <input type="text" id="pix-chave-saque" placeholder="Chave Pix para receber" />
+    
+<button onclick="abrirModalAvisoSaque()">Confirmar Saque</button>
+    <button class="cancel-btn" onclick="fecharModalSaque()">Cancelar</button>
+  </div>
+</div>
+
+</div>
+  <div class="saldo-info">
+   
+  </div>
+  <span id="saldo" style="display: none;">Saldo: R$0,00</span>
+  <div class="acoes" id="acoes" style="display: none;">
+  <button class="deposit-btn" onclick="depositar()">💰 Depositar</button>
+  <button class="withdraw-btn" onclick="abrirSaque()">🏧 Sacar</button>
+</div>
+
+<div id="auth">
+  <div class="auth-header">
+    <h1 class="logo-betime">🏆 <span>BetTime</span></h1>
+    <p>O seu portal de apostas esportivas</p>
+  </div>
+
+  <div class="auth-form">
+    <h2 id="form-title">🎯 Entrar na sua conta</h2>
+    <input type="text" id="username" placeholder="Nome de usuário" />
+    <input type="email" id="email" placeholder="Email" style="display: none;" />
+    <input type="password" id="password" placeholder="Senha" />
+    <button onclick="login()">Entrar</button>
+    <span class="toggle" onclick="toggleForm()">Não tem conta? Cadastre-se</span>
+  </div>
+</div>
+
+
+
+  <section class="main" id="main" style="display: none;">
+  <h2 id="titulo-partidas">⚽Partida de 23/06/2025</h2>
+
+<div class="match" style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;">
+  <div class="teams" style="flex: 1; min-width: 200px; display: flex; align-items: center; gap: 8px; font-weight: bold; font-size: 1rem; color: #f8fafc;">
+    <span class="team-name" style="background: linear-gradient(145deg, #334155, #1e293b); padding: 4px 8px; border-radius: 8px;">Flamengo</span>
+    <span class="versus" style="color: #fbbf24;">×</span>
+    <span class="team-name" style="background: linear-gradient(145deg, #334155, #1e293b); padding: 4px 8px; border-radius: 8px;">Palmeiras</span>
+  </div>
+
+  <div class="odds" style="flex: 1; min-width: 240px; display: flex; justify-content: space-around; align-items: center; color: #f1f5f9; font-size: 0.95rem;">
+  <div style="text-align: center;">
+    <div style="font-weight: bold; color: #38bdf8;">⚽ Flamengo</div>
+    <div style="color: #22c55e;"><strong>1.80</strong></div>
+  </div>
+  <div style="text-align: center;">
+    <div style="font-weight: bold; color: #fbbf24;">🤝 Empate</div>
+    <div style="color: #22c55e;"><strong>3.10</strong></div>
+  </div>
+  <div style="text-align: center;">
+    <div style="font-weight: bold; color: #38bdf8;">🟢 Palmeiras</div>
+    <div style="color: #22c55e;"><strong>2.20</strong></div>
+  </div>
+</div>
+
+
+  <div class="bet-form" style="flex: 1; min-width: 200px; display: flex; gap: 8px; align-items: center; justify-content: flex-end;">
+    <input type="number" id="valor1" placeholder="Valor (R$)" oninput="calcularRetorno('valor1', 'time1', 'retorno1')" style="width: 90px; padding: 6px; border-radius: 6px; border: none; background: #334155; color: #f1f5f9;" />
+    <select id="time1" onchange="calcularRetorno('valor1', 'time1', 'retorno1')" style="padding: 6px; border-radius: 6px; border: none; background: #334155; color: #f1f5f9;">
+      <option value="1.8">Flamengo</option>
+      <option value="3.1">Empate</option>
+      <option value="2.2">Palmeiras</option>
+    </select>
+    <button class="bet-btn" onclick="apostar('Flamengo vs Palmeiras', 'valor1', 'time1')" style="padding: 8px 14px; font-size: 0.9rem;">🎲 Apostar</button>
+  </div>
+
+  <div id="retorno1" class="retorno-info" style="width: 100%; margin-top: 6px; color: #22c55e; font-weight: 700;"></div>
+</div>
+
+
+
+
+  
+
+<div id="extrato">
+  <h3>Extrato</h3>
+  <div id="extrato-container">
+    <ul id="extrato-lista"></ul>
+  </div>
+</div>
+<!-- Modal de confirmação de aposta -->
+<div id="modal-confirm-aposta" class="modal-overlay" style="display: none;">
+  <div class="modal-content">
+    <h2>Confirmação de Aposta</h2>
+    <p id="texto-confirm-aposta"></p>
+    <div style="display: flex; justify-content: space-between; margin-top: 20px;">
+      <button id="btn-confirmar-aposta" class="confirm-btn">Confirmar</button>
+      <button id="btn-cancelar-aposta" class="cancel-btn">Cancelar</button>
+    </div>
+  </div>
+</div>
+<div id="modal-boas-vindas" class="modal-overlay" style="display: none;">
+  <div class="modal-content">
+    <h2>Bem-vindo(a) ao BetTime!</h2>
+    <p>Estamos felizes em te ver por aqui. Boa sorte nas apostas!</p>
+    <button id="btn-fechar-boas-vindas" class="confirm-btn">Fechar</button>
+  </div>
+</div>
+
+<!-- Modal de Aviso Pós-Pix -->
+<div id="modal-pos-pix" class="modal-overlay" style="display: none;">
+  <div class="modal-content">
+    <h2>Pagamento Pendente</h2>
+    <p>Após o pagamento do Pix, seu saldo será creditado automaticamente na sua conta.</p>
+    <button onclick="fecharModalPosPix()" class="confirm-btn">Entendi</button>
+  </div>
+</div>
+<small style="color: #fbbf24;">Limite diário de aposta: R$20,00</small>
+
+<!-- Modal de Limite de Aposta -->
+<div id="modal-limite-aposta" class="modal-overlay" style="display: none;">
+  <div class="modal-content">
+    <h2>⚠️ Limite Diário Atingido</h2>
+    <p>Você atingiu o limite diário de apostas de R$20,00.</p>
+    <button onclick="fecharModalLimiteAposta()" class="confirm-btn">Entendi</button>
+  </div>
+</div>
+<!-- Modal de aviso -->
+<!-- Modal HTML -->
+<div id="modalSaqueMinimo" class="modal" style="display:none;">
+  <div class="modal-content">
+    <span class="close" onclick="fecharModalSaqueMinimo()">&times;</span>
+    <h2>Aviso</h2>
+    <p>O valor mínimo para saque é R$20,00.</p>
+    <button onclick="fecharModalSaqueMinimo()">Fechar</button>
+  </div>
+</div>
+<div id="modal-aviso-saque" class="modal" style="display: none;">
+  <div class="modal-conteudo">
+    <p><strong>⚠️ Atenção!</strong></p>
+    <p>Confira se a chave Pix está correta.</p>
+    <p><strong>Se estiver errada, não haverá reembolso.</strong></p>
+    <button onclick="fecharModalAvisoSaque()">Entendi</button>
+  </div>
+</div>
+
+    </div>
+  </section>
+<script src="script.js"></script>
+</body>
+</html>
