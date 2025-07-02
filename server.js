@@ -4,17 +4,20 @@ const cors = require('cors');
 const bcrypt = require('bcrypt');
 const { Pool } = require('pg');
 require('dotenv').config();
-
+console.log('DATABASE_URL:', process.env.DATABASE_URL);
 const app = express();
 app.use(cors());
 app.use(express.json());
 
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: false
-  }
+  user: process.env.PGUSER,
+  password: process.env.PGPASSWORD,
+  host: process.env.PGHOST,
+  port: process.env.PGPORT,
+  database: process.env.PGDATABASE,
+  ssl: { rejectUnauthorized: false }
 });
+
 
 
 module.exports = pool;
