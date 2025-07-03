@@ -10,11 +10,7 @@ app.use(cors());
 app.use(express.json());
 
 const pool = new Pool({
-  user: process.env.PGUSER,
-  password: process.env.PGPASSWORD,
-  host: process.env.PGHOST,
-  port: process.env.PGPORT,
-  database: process.env.PGDATABASE,
+  connectionString: process.env.DATABASE_URL || `postgresql://${process.env.PGUSER}:${process.env.PGPASSWORD}@${process.env.PGHOST}:${process.env.PGPORT}/${process.env.PGDATABASE}?sslmode=require`,
   ssl: { rejectUnauthorized: false }
 });
 
@@ -41,8 +37,9 @@ function enviarNotificacao(mensagem) {
 }
 
 pool.connect()
-  .then(client => {
+  .then(async client => {
     console.log('Banco conectado com sucesso!');
+    await client.query('SET search_path TO public'); // <- ESSA LINHA AQUI
     client.release();
   })
   .catch(err => {
@@ -54,14 +51,14 @@ app.post('/register', async (req, res) => {
   const { username, password } = req.body;
 
   try {
-    const userExists = await pool.query('SELECT * FROM usuarios WHERE username = $1', [username]);
+    const userExists = await pool.query('SELECT * FROM public.usuarios WHERE username = $1', [username]);
     if (userExists.rows.length > 0) {
       return res.status(400).json({ message: 'Usuário já existe' });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
     await pool.query(
-      'INSERT INTO usuarios (username, password, saldo) VALUES ($1, $2, $3)',
+      'INSERT INTO public.usuarios (username, password, saldo) VALUES ($1, $2, $3)',
       [username, hashedPassword, 0]
     );
 
@@ -72,12 +69,15 @@ app.post('/register', async (req, res) => {
   }
 });
 
+console.log('Conectando ao banco com URL:', process.env.DATABASE_URL);
+
 // Login
 app.post('/login', async (req, res) => {
   const { username, password } = req.body;
 
   try {
-    const result = await pool.query('SELECT * FROM usuarios WHERE username = $1', [username]);
+    const result = await pool.query('SELECT * FROM public.usuarios WHERE username = $1', [username]);
+
     if (result.rows.length === 0) {
       return res.status(400).json({ message: 'Usuário não encontrado' });
     }
@@ -129,7 +129,7 @@ app.post('/confirmar-deposito', async (req, res) => {
   const { username, valor } = req.body;
 
   try {
-    await pool.query('UPDATE usuarios SET saldo = saldo + $1 WHERE username = $2', [valor, username]);
+await pool.query('UPDATE public.usuarios SET saldo = saldo + $1 WHERE username = $2', [valor, username]);
 
     await pool.query(
       'UPDATE extrato SET status = $1 WHERE username = $2 AND valor = $3 AND tipo = $4 AND status = $5',
@@ -177,7 +177,9 @@ app.post('/sacar', async (req, res) => {
 }
 
   try {
-    const result = await pool.query('SELECT saldo FROM usuarios WHERE username = $1', [username]);
+    const result = await pool.query('SELECT saldo FROM public.usuarios WHERE username = $1', [username]);
+
+await pool.query('UPDATE public.usuarios SET saldo = saldo - $1 WHERE username = $2', [valor, username]);
     if (result.rows.length === 0) {
       return res.status(404).json({ message: 'Usuário não encontrado' });
     }
@@ -207,16 +209,7 @@ app.post('/apostar', async (req, res) => {
   const { username, partida, valor, odd, timeEscolhido } = req.body;
   try {
     // Buscar saldo do usuário
-    const resultSaldo = await pool.query('SELECT saldo FROM usuarios WHERE username = $1', [username]);
-    if (resultSaldo.rows.length === 0) {
-      return res.status(404).json({ message: 'Usuário não encontrado' });
-    }
-    const saldoAtual = parseFloat(resultSaldo.rows[0].saldo);
-
-    if (valor > saldoAtual) {
-      return res.status(400).json({ message: 'Saldo insuficiente' });
-    }
-
+const resultSaldo = await pool.query('SELECT saldo FROM public.usuarios WHERE username = $1', [username]);
     // Somar apostas do usuário feitas hoje
     const hoje = new Date();
     hoje.setHours(0, 0, 0, 0);
@@ -287,3 +280,27 @@ app.listen(PORT, () => {
   console.log(`Servidor rodando em http://localhost:${PORT}`);
 });
 
+app.get('/debug/tabelas', async (req, res) => {
+  try {
+    const result = await pool.query(`
+      SELECT table_name 
+      FROM information_schema.tables 
+      WHERE table_schema = 'public'
+    `);
+    res.json(result.rows);
+  } catch (err) {
+    res.status(500).json({ erro: err.message });
+  }
+});
+app.get('/debug/tabelas', async (req, res) => {
+  try {
+    const result = await pool.query(`
+      SELECT table_name 
+      FROM information_schema.tables 
+      WHERE table_schema = 'public'
+    `);
+    res.json(result.rows);
+  } catch (err) {
+    res.status(500).json({ erro: err.message });
+  }
+});
