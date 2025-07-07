@@ -1,18 +1,30 @@
-const axios = require('axios');
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const bcrypt = require('bcrypt');
+const axios = require('axios');
 const { Pool } = require('pg');
-require('dotenv').config();
-console.log('DATABASE_URL:', process.env.DATABASE_URL);
+const query = 'SELECT * FROM usuarios WHERE email = $1';
+
+
+// Inicializa o express antes de usar `app`
 const app = express();
 app.use(cors());
 app.use(express.json());
 
+// Configuração do banco
+const isLocal = process.env.DATABASE_URL?.includes('localhost');
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL || `postgresql://${process.env.PGUSER}:${process.env.PGPASSWORD}@${process.env.PGHOST}:${process.env.PGPORT}/${process.env.PGDATABASE}?sslmode=require`,
-  ssl: { rejectUnauthorized: false }
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false
+  }
 });
+
+
+
+
+module.exports = pool;
 
 
 
@@ -72,11 +84,13 @@ app.post('/register', async (req, res) => {
 console.log('Conectando ao banco com URL:', process.env.DATABASE_URL);
 
 // Login
+// Substitua no /login
+// Login
 app.post('/login', async (req, res) => {
-  const { username, password } = req.body;
+  const { username, password } = req.body;  // Agora estamos esperando o 'username'
 
   try {
-    const result = await pool.query('SELECT * FROM public.usuarios WHERE username = $1', [username]);
+    const result = await pool.query('SELECT * FROM usuarios WHERE username = $1', [username]);  // Usando 'username' na consulta
 
     if (result.rows.length === 0) {
       return res.status(400).json({ message: 'Usuário não encontrado' });
@@ -90,7 +104,7 @@ app.post('/login', async (req, res) => {
 
     res.json({
       message: 'Login bem-sucedido!',
-      username: user.username,
+      username: user.username, // Envia o 'username' ao invés de 'email'
       saldo: parseFloat(user.saldo),
     });
   } catch (err) {
@@ -98,6 +112,7 @@ app.post('/login', async (req, res) => {
     res.status(500).json({ message: 'Erro no servidor' });
   }
 });
+
 
 // Registrar depósito (pendente)
 app.post('/depositar', async (req, res) => {
